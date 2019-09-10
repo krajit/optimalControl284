@@ -1,0 +1,14 @@
+
+optimalControl284.C
+
+EXE = $(FOAM_USER_APPBIN)/optimalControl284
+
+EXE_INC = \
+    -I$(LIB_SRC)/finiteVolume/lnInclude \
+    -I$(LIB_SRC)/meshTools/lnInclude
+
+EXE_LIBS = \
+    -lfiniteVolume \
+    -lfvOptions \
+    -lmeshTools
+
