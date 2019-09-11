@@ -12,10 +12,8 @@ IOdictionary physicalProperties
 );
 
 dimensionedScalar k(physicalProperties.lookup("k"));
-dimensionedScalar beta(physicalProperties.lookup("beta"));
 dimensionedScalar lambda(physicalProperties.lookup("lambda"));
-dimensionedScalar lambda1(physicalProperties.lookup("lambda1"));
-dimensionedScalar lambda2(physicalProperties.lookup("lambda2"));
+dimensionedScalar beta(physicalProperties.lookup("beta"));
 
 
 /***************************************************************************/
@@ -38,6 +36,21 @@ scalar alpha(numericalParameters.lookupOrDefault<scalar>("alpha", 1));
 scalar c1(numericalParameters.lookupOrDefault<scalar>("c1", 1e-4));
 scalar c2(numericalParameters.lookupOrDefault<scalar>("c2", 0.8));
 /****************************************************************************/
+
+Info << "Reading control u\n" << endl;
+volScalarField u
+(
+    IOobject
+    (
+	"u",
+	runTime.timeName(),
+	mesh,
+	IOobject::MUST_READ,
+	IOobject::AUTO_WRITE
+    ),
+    mesh
+);
+
 
 Info << "Reading target field\n" << endl;
 volScalarField yd
@@ -127,62 +140,9 @@ volScalarField p
     mesh
 );
 
-Info << "Reading control u\n" << endl;
-volScalarField u
-(
-    IOobject
-    (
-	"u",
-	runTime.timeName(),
-	mesh,
-	IOobject::MUST_READ,
-	IOobject::AUTO_WRITE
-    ),
-    mesh
-);
 
-// Info << "Calculating control variation p\n" << endl;
-// volScalarField p
-// (
-//     IOobject
-//     (
-// 	"p",
-// 	runTime.timeName(),
-// 	mesh,
-// 	IOobject::NO_READ,
-// 	IOobject::AUTO_WRITE
-//     ),
-//     lambda*p + beta*u
-// );
 
 scalarField volField = mesh.V();
-
-
-volScalarField uc
-(
-    IOobject
-    (
-	"uc",
-	runTime.timeName(),
-	mesh,
-	IOobject::NO_READ,
-	IOobject::AUTO_WRITE
-    ),
-    -(beta/lambda)*p
-);
-
-volScalarField udiff
-(
-    IOobject
-    (
-	"udiff",
-	runTime.timeName(),
-	mesh,
-	IOobject::NO_READ,
-	IOobject::AUTO_WRITE
-    ),
-    u - uc
-);
 
 volScalarField uk
 (

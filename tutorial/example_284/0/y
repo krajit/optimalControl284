@@ -18,22 +18,53 @@ FoamFile
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+#include "../include/simulationParameters"
 
 //dimensions      [0 0 0 1 0 0 0];
 dimensions	[0 0 0 0 0 0 0];
 
 internalField   uniform 0;
 
+ubField #codeStream
+{
+    codeInclude
+    #{
+        #include "fvCFD.H"
+//                #include "constants.H"
+    #};
+
+    codeOptions	//options for compilation
+    #{
+        -I$(LIB_SRC)/finiteVolume/lnInclude \
+        -I$(LIB_SRC)/meshTools/lnInclude \
+    #};
+
+    codeLibs	//libs needed to visualize BC in paraview
+    #{
+        -lmeshTools \
+        -lfiniteVolume
+    #};
+
+    code
+    #{
+        const IOdictionary &d = static_cast<const IOdictionary &>(dict);
+        const fvMesh &mesh = refCast<const fvMesh>(d.db());
+        const pointField& points = mesh.boundary()["dirichletBoundary"].Cf();
+        const volScalarField& u = d.db().lookupObject<volScalarField>("u");
+        label patchi = mesh.boundaryMesh().findPatchID("dirichletBoundary");
+        scalarField ub(points.size(), 0);
+        ub = u.boundaryField()[patchi];
+        os << "nonuniform " <<  ub;
+    #};
+};
+
 boundaryField
 {
     dirichletBoundary
     {
-        // type		fixedValue;
-        // value		uniform 0;
-
         type robin;
-        beta 0.1; // exchange coefficient
-        value uniform 0.0; // ambient temperature
+        beta $beta; // exchange coefficient
+        value $ubField; // ambient temperature
     }
 
     backAndFront           

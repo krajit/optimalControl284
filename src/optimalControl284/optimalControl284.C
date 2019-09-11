@@ -64,10 +64,10 @@ int main(int argc, char *argv[])
         Jold = J;
 
         // Primal equation
-        solve(fvm::laplacian(k, y) + lambda1*(beta * u) + f);
+        solve(fvm::laplacian(k, y) );
 
         // Adjoint equation
-        solve(fvm::laplacian(k, p) + lambda2*(y - yd));
+        solve(fvm::laplacian(k, p) +(y - yd));
 
         // Save current control
         uk = u;
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
             u.correctBoundaryConditions();
 
             // get new y
-            solve(fvm::laplacian(k, y) + lambda1*(beta * u) + f);
+            solve(fvm::laplacian(k, y));
             // get new cost
             #include "costFunctionValue.H"
 
@@ -128,8 +128,6 @@ int main(int argc, char *argv[])
     yd.write();
     p.write();
     u.write();
-    uc.write();
-    udiff.write();
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
