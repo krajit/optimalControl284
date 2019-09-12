@@ -29,6 +29,9 @@ Extrude {0,0,1}
 };
 
 Physical Surface("backAndFront") = {6,newEntities[0]};
-Physical Surface("dirichletBoundary") = {newEntities[2],newEntities[3],newEntities[4],newEntities[5]};
+Physical Surface("bottom") = {newEntities[2]};
+Physical Surface("right") = {newEntities[3]};
+Physical Surface("top") = {newEntities[4]};
+Physical Surface("left") = {newEntities[5]};
 Physical Volume(20) = {newEntities[1]};
 

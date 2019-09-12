@@ -15,7 +15,7 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-2
+5
 (
     backAndFront
     {
@@ -24,12 +24,33 @@ FoamFile
         nFaces          722;
         startFace       684;
     }
-    dirichletBoundary
+    bottom
     {
         type            patch;
         physicalType    patch;
-        nFaces          76;
+        nFaces          19;
         startFace       1406;
+    }
+    right
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          19;
+        startFace       1425;
+    }
+    top
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          19;
+        startFace       1444;
+    }
+    left
+    {
+        type            patch;
+        physicalType    patch;
+        nFaces          19;
+        startFace       1463;
     }
 )
 

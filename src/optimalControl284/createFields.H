@@ -12,8 +12,8 @@ IOdictionary physicalProperties
 );
 
 dimensionedScalar k(physicalProperties.lookup("k"));
-dimensionedScalar lambda(physicalProperties.lookup("lambda"));
-dimensionedScalar beta(physicalProperties.lookup("beta"));
+scalar lambda = readScalar(physicalProperties.lookup("lambda"));
+scalar beta = readScalar(physicalProperties.lookup("beta"));
 
 
 /***************************************************************************/

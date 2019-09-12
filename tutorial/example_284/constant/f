@@ -66,12 +66,29 @@ internalField	uniform 0;
 
 boundaryField
 {
-    dirichletBoundary
+   top
     {
-	type		fixedValue;
-	value		uniform 0;
+	type		calculated;
+	value		$internalField;
     }
 
+    bottom
+    {
+	type		calculated;
+	value		$internalField;
+    }
+
+    left
+    {
+	type		calculated;
+	value		$internalField;
+    }
+
+    right
+    {
+	type		calculated;
+	value		$internalField;
+    }
     backAndFront           
     {
         type            empty;

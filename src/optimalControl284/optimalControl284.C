@@ -49,14 +49,12 @@ int main(int argc, char *argv[])
     scalar Jold = 0;
     scalar Jk = 0;
 
-// Compute cost function value
-    #include "costFunctionValue.H"
+    // Compute cost function value
+#include "costFunctionValue.H"
 
     std::ofstream file("results.csv");
-    file << 0 << "," << J  << nl;
+    file << 0 << "," << J << nl;
     file.close();
-
-
 
     while (runTime.loop() && (fabs(J - Jold) > tol) && (alpha > tol))
     {
@@ -64,29 +62,41 @@ int main(int argc, char *argv[])
         Jold = J;
 
         // Primal equation
-        solve(fvm::laplacian(k, y) );
+        solve(fvm::laplacian(k, y));
 
         // Adjoint equation
-        solve(fvm::laplacian(k, p) +(y - yd));
+        solve(fvm::laplacian(k, p) + (y - yd));
 
         // Save current control
         uk = u;
 
-        // calculate current cost
-        #include "costFunctionValue.H"
+// calculate current cost
+#include "costFunctionValue.H"
         Jk = J;
 
         bool alphaFound = false;
 
         // calculate derivative^2 integrate((lambda*u + beta*p)^2 dv). Why??
-        scalar phip0 = gSum(volField * Foam::pow(lambda * uk.internalField() + beta * p.internalField(), 2));
+        scalar phip0 = 0;
+
+        // integrate in the boundary patches
+        forAll(patchesToIntegrate, i)
+        {
+            label patchi = mesh.boundaryMesh().findPatchID(patchesToIntegrate[i]);
+            //phi0 += 0.5 * lambda.value() * gSum(mesh.magSf().boundaryField()[patchi] * Foam::pow(u.boundaryField()[patchi], 2));
+            phip0 += gSum(
+                mesh.magSf().boundaryField()[patchi] *
+                Foam::pow(lambda * u.boundaryField()[patchi] + beta * p.boundaryField()[patchi], 2)
+            );
+        }
 
         while ((!alphaFound) && (alpha > tol))
         {
             u = uk - alpha * (lambda * uk + beta * p);
 
             // truncate u for constrained control set
-            forAll(u,i){
+            forAll(u, i)
+            {
                 u[i] = min(u[i], uMax[i]);
                 u[i] = max(u[i], uMin[i]);
             }
@@ -94,8 +104,8 @@ int main(int argc, char *argv[])
 
             // get new y
             solve(fvm::laplacian(k, y));
-            // get new cost
-            #include "costFunctionValue.H"
+// get new cost
+#include "costFunctionValue.H"
 
             // backtracking step to find alpha
             if (J <= Jk - c1 * alpha * phip0)
@@ -115,7 +125,7 @@ int main(int argc, char *argv[])
              << " - "
              << "Cost variation" << fabs(J - Jold) << endl;
 
-        file.open("results.csv",std::ios::app);
+        file.open("results.csv", std::ios::app);
         file << runTime.value() << "," << J << nl;
         file.close();
         runTime.write();

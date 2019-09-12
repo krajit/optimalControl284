@@ -22,41 +22,36 @@ FoamFile
 //dimensions      [1 -1 -3 0 0 0 0];
 dimensions	[0 0 0 0 0 0 0];
 
-internalField   uniform 1;
+internalField   uniform 0;
 
 boundaryField
 {
-/*
-    leftWall        
+
+    top
     {
-	type		fixedValue;
+	type		calculated;
 	value		uniform 0;
     }
 
-    rightWall       
-    {
-	type		fixedValue;
-	value		uniform 0; 
-    }
 
-    topWall       
-    {  
-        type            fixedValue;
-        value           uniform 0; 
-     }
-
-    bottomWall
+    bottom
     {
-	type		fixedValue;
+	type		calculated;
 	value		uniform 0;
     }
-*/
 
-    dirichletBoundary
+    left
     {
-	type		fixedValue;
+	type		calculated;
 	value		uniform 0;
     }
+
+    right
+    {
+	type		calculated;
+	value		uniform 0;
+    }
+
 
     backAndFront           
     {

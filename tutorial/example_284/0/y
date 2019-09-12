@@ -49,9 +49,9 @@ ubField #codeStream
     #{
         const IOdictionary &d = static_cast<const IOdictionary &>(dict);
         const fvMesh &mesh = refCast<const fvMesh>(d.db());
-        const pointField& points = mesh.boundary()["dirichletBoundary"].Cf();
+        const pointField& points = mesh.boundary()["right"].Cf();
         const volScalarField& u = d.db().lookupObject<volScalarField>("u");
-        label patchi = mesh.boundaryMesh().findPatchID("dirichletBoundary");
+        label patchi = mesh.boundaryMesh().findPatchID("right");
         scalarField ub(points.size(), 0);
         ub = u.boundaryField()[patchi];
         os << "nonuniform " <<  ub;
@@ -60,16 +60,35 @@ ubField #codeStream
 
 boundaryField
 {
-    dirichletBoundary
+
+        left
+    {
+        type fixedValue;
+        value uniform 0;
+    }
+
+    top
+    {
+        type zeroGradient;
+    }
+
+    bottom
+    {
+        type zeroGradient;
+    }
+
+    right
     {
         type robin;
         beta $beta; // exchange coefficient
         value $ubField; // ambient temperature
     }
 
-    backAndFront           
+    backAndFront
     {
-        type            empty;
+        type empty;
     }
+
+
 }
 // ************************************************************************* //
